@@ -1,0 +1,13 @@
+CHALLENGE SPRINT 01 - ENGMAN COPILOT (FIAP x MOTIVA)
+
+Turma: 1CCPA
+Recorte escolhido: B - Operacao e Priorizacao de Campo
+
+Integrantes:
+Waldir Arthur Holanda de Sousa - RM 576869 - 1CCPA
+Thalles Passos da Cunha - RM 574879 - 1CCPA
+Fernando Costa e Silva - RM 574637 - 1CCPA
+Henrique Shimada Pimenta - RM 570721 - 1CCPA
+
+Repositorio: https://github.com/ThallesP/engman-copilot
+Fluxograma: https://github.com/ThallesP/engman-copilot/blob/main/docs/arquitetura.png

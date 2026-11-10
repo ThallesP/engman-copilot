@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="660" viewBox="0 0 1000 660" font-family="DejaVu Sans, Arial, sans-serif">
+  <rect width="1000" height="660" fill="#fff"/>
+
+  <!-- header -->
+  <rect width="1000" height="56" fill="#111827"/>
+  <text x="20" y="35" font-size="16" font-weight="700" fill="#fff">EngMan Copilot · Triagem CCO</text>
+  <rect x="770" y="16" width="210" height="24" rx="12" fill="#374151"/>
+  <text x="875" y="32" text-anchor="middle" font-size="11" fill="#e5e7eb">protótipo · dados simulados</text>
+
+  <!-- sidebar -->
+  <rect x="0" y="56" width="250" height="604" fill="#f9fafb"/>
+  <line x1="250" y1="56" x2="250" y2="660" stroke="#e5e7eb"/>
+  <text x="18" y="86" font-size="12" font-weight="700" fill="#374151">ALARMES ABERTOS (3)</text>
+
+  <g font-size="11">
+    <rect x="12" y="98" width="226" height="64" rx="8" fill="#fff" stroke="#e5e7eb"/>
+    <text x="24" y="118" font-weight="700" fill="#111827">CFTV-RV01-KM412-N</text>
+    <text x="24" y="134" fill="#6b7280">imagem degradada · 05:40</text>
+    <rect x="24" y="141" width="104" height="16" rx="8" fill="#e5e7eb"/>
+    <text x="76" y="153" text-anchor="middle" font-size="9.5" font-weight="700" fill="#374151">AMBIENTAL · P4</text>
+
+    <rect x="12" y="170" width="226" height="64" rx="8" fill="#fff" stroke="#e5e7eb"/>
+    <text x="24" y="190" font-weight="700" fill="#111827">CFTV-RV01-KM418-S</text>
+    <text x="24" y="206" fill="#6b7280">imagem degradada · 05:42</text>
+    <rect x="24" y="213" width="104" height="16" rx="8" fill="#e5e7eb"/>
+    <text x="76" y="225" text-anchor="middle" font-size="9.5" font-weight="700" fill="#374151">AMBIENTAL · P4</text>
+
+    <rect x="12" y="242" width="226" height="64" rx="8" fill="#fff" stroke="#ed145b"/>
+    <text x="24" y="262" font-weight="700" fill="#111827">LACO-RV01-P03-F2</text>
+    <text x="24" y="278" fill="#6b7280">divergência de classif. · 05:45</text>
+    <rect x="24" y="285" width="76" height="16" rx="8" fill="#ed145b"/>
+    <text x="62" y="297" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">REAL · P2</text>
+  </g>
+
+  <text x="18" y="346" font-size="12" font-weight="700" fill="#374151">OS PROPOSTAS (0)</text>
+  <rect x="12" y="358" width="226" height="52" rx="8" fill="#fff" stroke="#e5e7eb"/>
+  <text x="24" y="378" font-size="11" font-weight="700" fill="#111827">nenhuma OS proposta</text>
+  <text x="24" y="396" font-size="10.5" fill="#6b7280">OS só com confirmação</text>
+
+  <!-- user message -->
+  <rect x="560" y="76" width="420" height="52" rx="12" fill="#111827"/>
+  <text x="576" y="98" font-size="12" fill="#fff">Recebi 3 alarmes agora, quais são reais</text>
+  <text x="576" y="116" font-size="12" fill="#fff">e o que eu faço primeiro?</text>
+
+  <!-- assistant message -->
+  <rect x="270" y="146" width="710" height="320" rx="12" fill="#f3f4f6"/>
+  <text x="288" y="170" font-size="11" font-weight="700" fill="#6b7280">EngMan Copilot</text>
+
+  <rect x="286" y="182" width="678" height="26" fill="#e5e7eb"/>
+  <g font-size="10.5" font-weight="700" fill="#374151">
+    <text x="294" y="199">TAG</text>
+    <text x="448" y="199">Classificação</text>
+    <text x="552" y="199">Evidência</text>
+    <text x="786" y="199">Prior.</text>
+    <text x="836" y="199">Ação</text>
+  </g>
+  <g font-size="10.5" fill="#111827">
+    <text x="294" y="226">CFTV-RV01-KM412-N</text>
+    <text x="448" y="226">AMBIENTAL</text>
+    <text x="552" y="226">neblina, visib. 80 m [SCA-KM410]</text>
+    <text x="786" y="226">P4</text>
+    <text x="836" y="226">reavaliar depois</text>
+    <line x1="286" y1="238" x2="964" y2="238" stroke="#d1d5db"/>
+
+    <text x="294" y="256">CFTV-RV01-KM418-S</text>
+    <text x="448" y="256">AMBIENTAL</text>
+    <text x="552" y="256">neblina, visib. 110 m [SCA-KM410]</text>
+    <text x="786" y="256">P4</text>
+    <text x="836" y="256">reavaliar depois</text>
+    <line x1="286" y1="268" x2="964" y2="268" stroke="#d1d5db"/>
+
+    <text x="294" y="286" font-weight="700">LACO-RV01-P03-F2</text>
+    <text x="448" y="286" font-weight="700" fill="#ed145b">REAL</text>
+    <text x="552" y="286">laço não sofre com neblina;</text>
+    <text x="552" y="301">3 trincas em 6 meses [FSM]</text>
+    <text x="786" y="286" font-weight="700">P2</text>
+    <text x="836" y="286">propor OS</text>
+    <text x="836" y="301">corretiva</text>
+  </g>
+
+  <g font-size="12" fill="#111827">
+    <text x="288" y="340">Tratar primeiro o LACO-RV01-P03-F2 (P2, atendimento em até 8 h).</text>
+    <text x="288" y="360">Hipótese: nova trinca no pavimento, verificar em campo.</text>
+    <text x="288" y="380">Quer que eu proponha o texto da OS?</text>
+  </g>
+  <text x="288" y="414" font-size="11.5" fill="#374151">Nível de confiança: alto – neblina confirmada pela SCA e reincidência no FSM.</text>
+  <text x="288" y="446" font-size="10" fill="#9ca3af">Fontes: SCA-RV01-KM410 · FSM · MC-01</text>
+
+  <!-- quick actions -->
+  <g font-size="11.5" font-weight="600" fill="#111827">
+    <rect x="270" y="484" width="150" height="32" rx="16" fill="#fff" stroke="#ed145b"/>
+    <text x="345" y="505" text-anchor="middle" fill="#ed145b">Propor OS do laço</text>
+    <rect x="430" y="484" width="170" height="32" rx="16" fill="#fff" stroke="#d1d5db"/>
+    <text x="515" y="505" text-anchor="middle">Histórico do laço</text>
+    <rect x="610" y="484" width="150" height="32" rx="16" fill="#fff" stroke="#d1d5db"/>
+    <text x="685" y="505" text-anchor="middle">Resumo do turno</text>
+  </g>
+
+  <!-- input -->
+  <rect x="270" y="590" width="640" height="46" rx="10" fill="#fff" stroke="#d1d5db"/>
+  <text x="288" y="618" font-size="12" fill="#9ca3af">Digite um TAG ou cole os alarmes da tela do CCO…</text>
+  <rect x="920" y="590" width="60" height="46" rx="10" fill="#ed145b"/>
+  <text x="950" y="618" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">Enviar</text>
+</svg>

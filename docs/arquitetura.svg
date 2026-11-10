@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1250" height="720" viewBox="0 0 1250 720" font-family="DejaVu Sans, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#374151"/>
+    </marker>
+  </defs>
+  <rect width="1250" height="720" fill="#fff"/>
+  <text x="20" y="30" font-size="15" font-weight="700" fill="#111827">EngMan Copilot · Triagem CCO — fluxo de uma pergunta</text>
+
+  <!-- connectors -->
+  <g stroke="#374151" stroke-width="2" fill="none">
+    <line x1="210" y1="130" x2="248" y2="130" marker-end="url(#a)"/>
+    <line x1="470" y1="130" x2="508" y2="130" marker-end="url(#a)"/>
+    <line x1="760" y1="130" x2="788" y2="130" marker-end="url(#a)"/>
+    <line x1="905" y1="190" x2="905" y2="233" marker-end="url(#a)"/>
+    <line x1="1000" y1="290" x2="1038" y2="290" marker-end="url(#a)"/>
+    <polyline points="1137,240 1137,44 635,44 635,68" marker-end="url(#a)"/>
+    <line x1="360" y1="190" x2="360" y2="238" marker-end="url(#a)"/>
+    <polyline points="360,340 360,400 520,400 520,418" marker-end="url(#a)"/>
+    <line x1="635" y1="240" x2="635" y2="192" marker-end="url(#a)"/>
+    <line x1="905" y1="345" x2="905" y2="418" marker-end="url(#a)"/>
+    <line x1="800" y1="420" x2="800" y2="194" stroke-dasharray="6 4" marker-end="url(#a)"/>
+    <line x1="780" y1="480" x2="732" y2="480" marker-end="url(#a)"/>
+    <polyline points="470,500 115,500 115,192" marker-end="url(#a)"/>
+    <line x1="600" y1="540" x2="600" y2="578" marker-end="url(#a)"/>
+    <line x1="1137" y1="340" x2="1137" y2="365" stroke-dasharray="4 3"/>
+  </g>
+
+  <!-- connector labels -->
+  <g font-size="10.5" fill="#6b7280" font-weight="600">
+    <text x="886" y="38" text-anchor="middle">6 → 3: retorno da tool reinjetado no contexto</text>
+    <text x="1006" y="282">Sim</text>
+    <text x="368" y="220">bloqueado</text>
+    <text x="645" y="222">RAG: top-4</text>
+    <text x="913" y="388">Não</text>
+    <text x="795" y="372" text-anchor="end">reprovou:</text>
+    <text x="795" y="386" text-anchor="end">regenera 1x</text>
+    <text x="737" y="472">ok</text>
+    <text x="290" y="492" text-anchor="middle">resposta ao operador</text>
+    <text x="608" y="564">grava o turno</text>
+  </g>
+
+  <!-- 1 entrada -->
+  <rect x="20" y="70" width="190" height="120" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+  <text x="32" y="92" font-size="12.5" font-weight="700" fill="#111827">1 · Entrada</text>
+  <g font-size="11" fill="#374151">
+    <text x="32" y="112">Operador do CCO</text>
+    <text x="32" y="127">texto livre ou lista</text>
+    <text x="32" y="142">de alarmes do turno</text>
+    <text x="32" y="157">ex.: "recebi 3 alarmes,</text>
+    <text x="32" y="172">quais são reais?"</text>
+  </g>
+
+  <!-- 2 guardrail entrada -->
+  <rect x="250" y="70" width="220" height="120" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="1.5"/>
+  <text x="262" y="92" font-size="12.5" font-weight="700" fill="#111827">2 · Guardrail de entrada</text>
+  <g font-size="11" fill="#374151">
+    <text x="262" y="112">ativo do escopo? (CFTV,</text>
+    <text x="262" y="127">CLS, LACO, PFF)</text>
+    <text x="262" y="142">pedido perigoso?</text>
+    <text x="262" y="157">injection? dado pessoal?</text>
+    <text x="262" y="172">ok → segue para o bloco 3</text>
+  </g>
+
+  <!-- 3 montagem -->
+  <rect x="510" y="70" width="250" height="120" rx="8" fill="#fff" stroke="#111827" stroke-width="1.5"/>
+  <text x="522" y="92" font-size="12.5" font-weight="700" fill="#111827">3 · Montagem do contexto</text>
+  <g font-size="11" fill="#374151">
+    <text x="522" y="112">system prompt (7 blocos)</text>
+    <text x="522" y="127">+ histórico: 6 turnos + resumo</text>
+    <text x="522" y="142">+ TAG em análise</text>
+    <text x="522" y="157">+ trechos da base (RAG)</text>
+    <text x="522" y="172">+ retorno das tools como DADO</text>
+  </g>
+
+  <!-- 4 llm -->
+  <rect x="790" y="70" width="230" height="120" rx="8" fill="#fff" stroke="#111827" stroke-width="1.5"/>
+  <text x="802" y="92" font-size="12.5" font-weight="700" fill="#111827">4 · Chamada ao LLM</text>
+  <g font-size="11" fill="#374151">
+    <text x="802" y="112">Qwen 2.5 7B Instruct</text>
+    <text x="802" y="127">Ollama, roda local</text>
+    <text x="802" y="142">temperature 0.2</text>
+    <text x="802" y="157">max_tokens 700</text>
+    <text x="802" y="172">num_ctx 8192</text>
+  </g>
+
+  <!-- 5 decisao -->
+  <polygon points="905,235 1000,290 905,345 810,290" fill="#fff" stroke="#111827" stroke-width="1.5"/>
+  <text x="905" y="287" text-anchor="middle" font-size="11.5" font-weight="700" fill="#111827">5 · Precisa de</text>
+  <text x="905" y="302" text-anchor="middle" font-size="11.5" font-weight="700" fill="#111827">dado ou ação?</text>
+
+  <!-- 6 tool -->
+  <rect x="1040" y="240" width="195" height="100" rx="8" fill="#fff" stroke="#111827" stroke-width="1.5"/>
+  <text x="1052" y="262" font-size="12.5" font-weight="700" fill="#111827">6 · Execução da tool</text>
+  <g font-size="11" fill="#374151">
+    <text x="1052" y="282">retorno simulado (JSON)</text>
+    <text x="1052" y="297">falhou → regra 12</text>
+    <text x="1052" y="312">abrir OS só com</text>
+    <text x="1052" y="327">confirmação (regra 7)</text>
+  </g>
+
+  <!-- tools list -->
+  <rect x="1040" y="365" width="195" height="200" rx="8" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.2"/>
+  <text x="1052" y="386" font-size="11" font-weight="700" fill="#374151">Tools (tools_spec.json)</text>
+  <g font-size="9.5" fill="#111827" font-family="DejaVu Sans Mono, monospace">
+    <text x="1050" y="408">consultar_ativo</text>
+    <text x="1050" y="427">consultar_historico_falhas</text>
+    <text x="1050" y="446">listar_alarmes_abertos</text>
+    <text x="1050" y="465">consultar_condicao_ambiental</text>
+    <text x="1050" y="484">consultar_procedimento</text>
+    <text x="1050" y="503">listar_ativos_por_criticidade</text>
+    <text x="1050" y="522">calcular_metricas_confiab.</text>
+    <text x="1050" y="541">abrir_ordem_servico</text>
+  </g>
+
+  <!-- recusa -->
+  <rect x="250" y="240" width="220" height="100" rx="8" fill="#fde7ef" stroke="#ed145b" stroke-width="1.5"/>
+  <text x="262" y="262" font-size="12.5" font-weight="700" fill="#111827">Recusa</text>
+  <g font-size="11" fill="#374151">
+    <text x="262" y="282">fora do escopo: frase</text>
+    <text x="262" y="297">padrão (regra 8)</text>
+    <text x="262" y="312">perigo: POP + NR-10/35</text>
+    <text x="262" y="327">e profissional (regra 6)</text>
+  </g>
+
+  <!-- kb -->
+  <rect x="510" y="240" width="250" height="100" rx="8" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.2"/>
+  <text x="522" y="262" font-size="12.5" font-weight="700" fill="#111827">Base de conhecimento</text>
+  <g font-size="11" fill="#374151">
+    <text x="522" y="282">ChromaDB + multilingual-e5</text>
+    <text x="522" y="297">catálogo · plano PMP-01 · FSM</text>
+    <text x="522" y="312">POPs · matriz MC-01 · NR</text>
+    <text x="522" y="327">glossário · boletins</text>
+  </g>
+
+  <!-- 7 guardrail saida -->
+  <rect x="780" y="420" width="250" height="120" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="1.5"/>
+  <text x="792" y="442" font-size="12.5" font-weight="700" fill="#111827">7 · Guardrail de saída</text>
+  <g font-size="11" fill="#374151">
+    <text x="792" y="462">TAG existe no catálogo?</text>
+    <text x="792" y="477">fonte citada? FATO × HIPÓTESE?</text>
+    <text x="792" y="492">AMBIENTAL com leitura da SCA?</text>
+    <text x="792" y="507">placa mascarada? no escopo?</text>
+    <text x="792" y="522">nível de confiança presente?</text>
+  </g>
+
+  <!-- 8 resposta -->
+  <rect x="470" y="420" width="260" height="120" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+  <text x="482" y="442" font-size="12.5" font-weight="700" fill="#111827">8 · Resposta + histórico</text>
+  <g font-size="11" fill="#374151">
+    <text x="482" y="462">tabela TAG | Classificação |</text>
+    <text x="482" y="477">Evidência | Prioridade | Ação</text>
+    <text x="482" y="492">+ nível de confiança</text>
+    <text x="482" y="507">OS sempre como proposta</text>
+    <text x="482" y="522">resumo a cada 6 turnos</text>
+  </g>
+
+  <!-- historico -->
+  <rect x="470" y="580" width="260" height="80" rx="8" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.2"/>
+  <text x="482" y="602" font-size="12.5" font-weight="700" fill="#111827">Histórico da conversa</text>
+  <g font-size="11" fill="#374151">
+    <text x="482" y="622">últimos 6 turnos + resumo</text>
+    <text x="482" y="637">lido pelo bloco 3 a cada turno</text>
+  </g>
+
+  <!-- legend -->
+  <g font-size="11" fill="#374151">
+    <rect x="20" y="590" width="14" height="14" rx="3" fill="#fef3c7" stroke="#b45309"/>
+    <text x="42" y="601">guardrail (antes da resposta)</text>
+    <rect x="20" y="614" width="14" height="14" rx="3" fill="#f3f4f6" stroke="#9ca3af"/>
+    <text x="42" y="625">fonte de dados</text>
+    <rect x="20" y="638" width="14" height="14" rx="3" fill="#ecfdf5" stroke="#059669"/>
+    <text x="42" y="649">operador do CCO</text>
+    <rect x="20" y="662" width="14" height="14" rx="3" fill="#fde7ef" stroke="#ed145b"/>
+    <text x="42" y="673">recusa</text>
+  </g>
+  <text x="1235" y="705" text-anchor="end" font-size="10" fill="#9ca3af">Dados simulados · Sprint 01 · nenhum bloco está implementado em código nesta fase</text>
+</svg>

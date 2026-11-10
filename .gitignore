@@ -1,0 +1,21 @@
+# Segredos e chaves
+.env
+.env.*
+*.key
+*.pem
+secrets/
+
+# Python e notebooks (não fazem parte da entrega da Sprint 01)
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Base vetorial local e logs
+chroma_db/
+*.log
+
+# Sistema
+.DS_Store
+Thumbs.db

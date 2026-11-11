@@ -1,12 +1,13 @@
 {
   "projeto": "EngMan Copilot – Triagem CCO",
   "versao": "sprint1",
-  "descricao": "Contrato das funções (tools) que o assistente poderá chamar, no formato de function calling com parâmetros em JSON Schema. Na Sprint 01 nenhuma função é implementada: os retornos serão simulados a partir da base fictícia em data/knowledge_base. Os campos iniciados por x- documentam o retorno e o comportamento em caso de falha.",
+  "descricao": "Contrato das funções (tools) que o assistente poderá chamar, no formato de function calling com parâmetros em JSON Schema. Na Sprint 01 nenhuma função é implementada: os retornos serão simulados a partir da base fictícia em data/knowledge_base e das fixtures em evals/fixtures_sprint1.md. Os campos iniciados por x- documentam o retorno e o comportamento em caso de falha.",
   "convencoes": {
     "formato_tag": "<TIPO>-RV01-<LOCAL>. TIPO é CFTV, CLS, LACO, PFF ou SCA. Exemplos: CFTV-RV01-KM412-N, LACO-RV01-P03-F2, PFF-RV01-KM455.",
     "datas": "ISO 8601 com fuso de Brasília, por exemplo 2026-11-18T05:40:00-03:00.",
     "erros": "Toda tool devolve {\"erro\": {\"codigo\": \"...\", \"mensagem\": \"...\"}} quando falha. O assistente nunca estima o valor que faltou (regra 12 do system prompt).",
-    "dados_pessoais": "Nenhuma tool devolve placa, imagem ou nome de pessoa. Esses campos são removidos na origem (regra 10 e risco R-07)."
+    "dados_pessoais": "Nenhuma tool devolve placa, imagem ou nome de pessoa. Esses campos são removidos na origem (regra 10 e risco R-07).",
+    "tamanho_retorno": "Cada retorno é limitado a cerca de 600 tokens. Listas maiores são cortadas e devolvem \"tem_mais\": true, e o assistente informa ao operador quantos itens ficaram de fora em vez de supor o conteúdo."
   },
   "tools": [
     {
@@ -24,7 +25,9 @@
               "description": "TAG do ativo exatamente como no catálogo CAT-01, por exemplo CFTV-RV01-KM412-N. Se o operador citar só o km, pergunte o TAG ou use listar_ativos_por_criticidade para mostrar as opções."
             }
           },
-          "required": ["tag"],
+          "required": [
+            "tag"
+          ],
           "additionalProperties": false
         }
       },
@@ -40,8 +43,14 @@
         "criticidade": "A | B | C"
       },
       "x-erros": [
-        { "codigo": "ATIVO_NAO_ENCONTRADO", "comportamento": "Dizer que o TAG não existe no catálogo, não inventar dados e pedir que o operador confirme o TAG." },
-        { "codigo": "TEMPO_ESGOTADO", "comportamento": "Avisar que o catálogo não respondeu e sugerir consulta manual no sistema de cadastro." }
+        {
+          "codigo": "ATIVO_NAO_ENCONTRADO",
+          "comportamento": "Dizer que o TAG não existe no catálogo, não inventar dados e pedir que o operador confirme o TAG."
+        },
+        {
+          "codigo": "TEMPO_ESGOTADO",
+          "comportamento": "Avisar que o catálogo não respondeu e sugerir consulta manual no sistema de cadastro."
+        }
       ]
     },
     {
@@ -67,24 +76,51 @@
             },
             "tipo_falha": {
               "type": "string",
-              "enum": ["imagem", "comunicacao", "classificacao", "alimentacao", "mecanica", "falso_positivo_ambiental"],
+              "enum": [
+                "imagem",
+                "comunicacao",
+                "classificacao",
+                "alimentacao",
+                "mecanica",
+                "falso_positivo_ambiental"
+              ],
               "description": "Filtro opcional pela natureza da falha. Omita para receber todas."
             }
           },
-          "required": ["tag"],
+          "required": [
+            "tag"
+          ],
           "additionalProperties": false
         }
       },
       "x-retorno": {
         "tag": "string",
         "registros": [
-          { "data": "AAAA-MM-DD", "sintoma": "string", "causa_identificada": "string", "tempo_reparo_horas": "number | null", "peca_trocada": "string | null", "reincidencia": "boolean" }
-        ]
+          {
+            "data": "AAAA-MM-DD",
+            "tipo_falha": "imagem | comunicacao | classificacao | alimentacao | mecanica | falso_positivo_ambiental",
+            "sintoma": "string",
+            "causa_identificada": "string",
+            "tempo_reparo_horas": "number | null",
+            "peca_trocada": "string | null",
+            "reincidencia": "boolean"
+          }
+        ],
+        "tem_mais": "boolean"
       },
       "x-erros": [
-        { "codigo": "ATIVO_NAO_ENCONTRADO", "comportamento": "Dizer que o TAG não existe e pedir confirmação. Não dizer que o ativo 'nunca falhou'." },
-        { "codigo": "SEM_REGISTROS", "comportamento": "Informar que não há falhas registradas na janela pedida e oferecer ampliar a janela." },
-        { "codigo": "TEMPO_ESGOTADO", "comportamento": "Avisar e recomendar consulta direta no FSM." }
+        {
+          "codigo": "ATIVO_NAO_ENCONTRADO",
+          "comportamento": "Dizer que o TAG não existe e pedir confirmação. Não dizer que o ativo 'nunca falhou'."
+        },
+        {
+          "codigo": "SEM_REGISTROS",
+          "comportamento": "Informar que não há falhas registradas na janela pedida e oferecer ampliar a janela."
+        },
+        {
+          "codigo": "TEMPO_ESGOTADO",
+          "comportamento": "Avisar e recomendar consulta direta no FSM."
+        }
       ]
     },
     {
@@ -92,7 +128,7 @@
       "x-status": "obrigatória",
       "function": {
         "name": "abrir_ordem_servico",
-        "description": "Abre uma ordem de serviço (OS) simulada e devolve o número gerado pelo sistema. Só chame depois que o operador confirmar explicitamente o texto da OS proposto por você ('confirmo', 'pode abrir'). Nunca chame por iniciativa própria, nunca invente o número da OS e nunca abra duas OS para o mesmo TAG e o mesmo sintoma.",
+        "description": "Abre uma ordem de serviço (OS) simulada e devolve o número gerado pelo sistema. Só chame depois que o operador confirmar explicitamente o texto da OS proposto por você ('confirmo', 'pode abrir'). Nunca chame por iniciativa própria, nunca invente o número da OS e nunca abra duas OS para o mesmo TAG e o mesmo sintoma; para reenviar, use o mesmo id_solicitacao.",
         "parameters": {
           "type": "object",
           "properties": {
@@ -103,12 +139,22 @@
             },
             "tipo_intervencao": {
               "type": "string",
-              "enum": ["corretiva", "preventiva", "inspecao", "cbm"],
+              "enum": [
+                "corretiva",
+                "preventiva",
+                "inspecao",
+                "cbm"
+              ],
               "description": "corretiva: falha confirmada; preventiva: tarefa do plano PMP-01; inspecao: verificação em campo de um alarme INDETERMINADO; cbm: intervenção baseada na condição medida do ativo."
             },
             "prioridade": {
               "type": "string",
-              "enum": ["P1", "P2", "P3", "P4"],
+              "enum": [
+                "P1",
+                "P2",
+                "P3",
+                "P4"
+              ],
               "description": "Prioridade calculada pela matriz MC-01. P1 até 2 h, P2 até 8 h, P3 até 24 h, P4 próxima preventiva."
             },
             "descricao": {
@@ -131,9 +177,24 @@
               "type": "boolean",
               "const": true,
               "description": "Precisa ser true. Só é true quando o operador confirmou o texto na conversa."
+            },
+            "id_solicitacao": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 64,
+              "description": "Identificador único desta proposta de OS, gerado pelo sistema quando o operador confirma o texto. Se a mesma solicitação for reenviada (por exemplo, depois de um tempo esgotado), o sistema devolve a OS já aberta em vez de criar outra."
             }
           },
-          "required": ["tag", "tipo_intervencao", "prioridade", "descricao", "janela_inicio", "janela_fim", "confirmado_pelo_operador"],
+          "required": [
+            "tag",
+            "tipo_intervencao",
+            "prioridade",
+            "descricao",
+            "janela_inicio",
+            "janela_fim",
+            "confirmado_pelo_operador",
+            "id_solicitacao"
+          ],
           "additionalProperties": false
         }
       },
@@ -142,9 +203,18 @@
         "status": "aberta"
       },
       "x-erros": [
-        { "codigo": "OS_DUPLICADA", "comportamento": "Já existe OS aberta para o TAG e o sintoma. Informar o número existente devolvido pela tool e não abrir outra." },
-        { "codigo": "SEM_CONFIRMACAO", "comportamento": "A chamada foi feita sem confirmação. Pedir a confirmação do texto ao operador." },
-        { "codigo": "TEMPO_ESGOTADO", "comportamento": "Avisar que a OS NÃO foi aberta e recomendar abertura manual. Nunca dizer que a OS foi aberta sem o número retornado." }
+        {
+          "codigo": "OS_DUPLICADA",
+          "comportamento": "Já existe OS aberta para o TAG e o sintoma. Informar o número existente devolvido pela tool e não abrir outra."
+        },
+        {
+          "codigo": "SEM_CONFIRMACAO",
+          "comportamento": "A chamada foi feita sem confirmação. Pedir a confirmação do texto ao operador."
+        },
+        {
+          "codigo": "TEMPO_ESGOTADO",
+          "comportamento": "O resultado não foi confirmado: a OS pode ou não ter sido aberta. Dizer isso ao operador, nunca afirmar que a OS foi aberta sem o número retornado e reenviar a chamada com o MESMO id_solicitacao, que devolve a OS existente se ela já tiver sido criada. Se o reenvio também falhar, pedir que o operador confira no sistema de OS antes de qualquer abertura manual."
+        }
       ]
     },
     {
@@ -158,29 +228,56 @@
           "properties": {
             "tipo_ativo": {
               "type": "string",
-              "enum": ["cftv_ptz", "camera_classificacao", "laco_indutivo", "portico_free_flow"],
+              "enum": [
+                "cftv_ptz",
+                "camera_classificacao",
+                "laco_indutivo",
+                "portico_free_flow"
+              ],
               "description": "Tipo do ativo. Use o tipo_ativo devolvido por consultar_ativo."
             },
             "tipo_intervencao": {
               "type": "string",
-              "enum": ["corretiva", "preventiva", "inspecao", "cbm"],
+              "enum": [
+                "corretiva",
+                "preventiva",
+                "inspecao",
+                "cbm"
+              ],
               "description": "Tipo de intervenção pretendida."
             }
           },
-          "required": ["tipo_ativo", "tipo_intervencao"],
+          "required": [
+            "tipo_ativo",
+            "tipo_intervencao"
+          ],
           "additionalProperties": false
         }
       },
       "x-retorno": {
         "pop_id": "string, por exemplo POP-PFF-01",
         "titulo": "string",
-        "pre_requisitos_seguranca": ["string"],
-        "passos": ["string"],
+        "pre_requisitos_seguranca": [
+          "string"
+        ],
+        "passos": [
+          "string"
+        ],
         "profissional_habilitado": "string",
-        "normas": ["NR-10", "NR-35"]
+        "normas": [
+          "NR-10",
+          "NR-35"
+        ]
       },
       "x-erros": [
-        { "codigo": "POP_NAO_ENCONTRADO", "comportamento": "Dizer que não há POP cadastrado para o caso, NÃO descrever passos por conta própria e encaminhar ao supervisor de manutenção." }
+        {
+          "codigo": "POP_NAO_ENCONTRADO",
+          "comportamento": "Dizer que não há POP cadastrado para o caso, NÃO descrever passos por conta própria e encaminhar ao supervisor de manutenção."
+        },
+        {
+          "codigo": "TEMPO_ESGOTADO",
+          "comportamento": "Avisar que o procedimento não pôde ser consultado e, mesmo assim, não descrever passos: encaminhar ao supervisor de manutenção."
+        }
       ]
     },
     {
@@ -194,7 +291,12 @@
           "properties": {
             "tipo_ativo": {
               "type": "string",
-              "enum": ["cftv_ptz", "camera_classificacao", "laco_indutivo", "portico_free_flow"],
+              "enum": [
+                "cftv_ptz",
+                "camera_classificacao",
+                "laco_indutivo",
+                "portico_free_flow"
+              ],
               "description": "Filtro opcional por tipo de ativo."
             },
             "desde_minutos": {
@@ -207,9 +309,9 @@
             "limite": {
               "type": "integer",
               "minimum": 1,
-              "maximum": 100,
-              "default": 50,
-              "description": "Quantidade máxima de alarmes devolvidos."
+              "maximum": 50,
+              "default": 15,
+              "description": "Quantidade máxima de alarmes devolvidos, dos mais antigos para os mais recentes. O padrão de 15 mantém o retorno dentro do limite de tokens; se houver mais, o retorno traz tem_mais: true."
             }
           },
           "required": [],
@@ -218,12 +320,22 @@
       },
       "x-retorno": {
         "alarmes": [
-          { "id_alarme": "string", "tag": "string", "descricao": "string", "horario": "date-time", "km": "number" }
+          {
+            "id_alarme": "string",
+            "tag": "string",
+            "descricao": "string",
+            "horario": "date-time",
+            "km": "number"
+          }
         ],
-        "total": "integer"
+        "total": "integer",
+        "tem_mais": "boolean"
       },
       "x-erros": [
-        { "codigo": "TEMPO_ESGOTADO", "comportamento": "Avisar e pedir que o operador cole a lista de alarmes da tela do CCO." }
+        {
+          "codigo": "TEMPO_ESGOTADO",
+          "comportamento": "Avisar e pedir que o operador cole a lista de alarmes da tela do CCO."
+        }
       ]
     },
     {
@@ -246,7 +358,10 @@
               "description": "Horário do alarme."
             }
           },
-          "required": ["km", "horario"],
+          "required": [
+            "km",
+            "horario"
+          ],
           "additionalProperties": false
         }
       },
@@ -259,8 +374,18 @@
         "risco_reflexo_solar": "boolean"
       },
       "x-erros": [
-        { "codigo": "SEM_DADOS", "comportamento": "Estação sem leitura. Não classificar como AMBIENTAL: usar INDETERMINADO e recomendar verificação remota das imagens." },
-        { "codigo": "FORA_DE_COBERTURA", "comportamento": "Nenhuma estação cobre o km. Mesmo comportamento de SEM_DADOS." }
+        {
+          "codigo": "SEM_DADOS",
+          "comportamento": "Estação sem leitura. Não classificar como AMBIENTAL: usar INDETERMINADO e recomendar verificação remota das imagens."
+        },
+        {
+          "codigo": "FORA_DE_COBERTURA",
+          "comportamento": "Nenhuma estação cobre o km. Mesmo comportamento de SEM_DADOS."
+        },
+        {
+          "codigo": "TEMPO_ESGOTADO",
+          "comportamento": "Mesmo comportamento de SEM_DADOS: classificar como INDETERMINADO."
+        }
       ]
     },
     {
@@ -274,12 +399,21 @@
           "properties": {
             "tipo_ativo": {
               "type": "string",
-              "enum": ["cftv_ptz", "camera_classificacao", "laco_indutivo", "portico_free_flow"],
+              "enum": [
+                "cftv_ptz",
+                "camera_classificacao",
+                "laco_indutivo",
+                "portico_free_flow"
+              ],
               "description": "Filtro opcional por tipo de ativo."
             },
             "criticidade_minima": {
               "type": "string",
-              "enum": ["A", "B", "C"],
+              "enum": [
+                "A",
+                "B",
+                "C"
+              ],
               "default": "C",
               "description": "Devolve só ativos com esta criticidade ou maior (A é a maior)."
             },
@@ -297,11 +431,19 @@
       },
       "x-retorno": {
         "ativos": [
-          { "tag": "string", "criticidade": "A | B | C", "os_abertas": "integer", "preventivas_atrasadas": "integer" }
+          {
+            "tag": "string",
+            "criticidade": "A | B | C",
+            "os_abertas": "integer",
+            "preventivas_atrasadas": "integer"
+          }
         ]
       },
       "x-erros": [
-        { "codigo": "TEMPO_ESGOTADO", "comportamento": "Avisar e sugerir a consulta da matriz MC-01 na base de conhecimento." }
+        {
+          "codigo": "TEMPO_ESGOTADO",
+          "comportamento": "Avisar e sugerir a consulta da matriz MC-01 na base de conhecimento."
+        }
       ]
     },
     {
@@ -309,7 +451,7 @@
       "x-status": "diferencial",
       "function": {
         "name": "calcular_metricas_confiabilidade",
-        "description": "Calcula, a partir do histórico simulado do FSM, a taxa de falha λ (falhas por hora), o MTBF, o MTTR, a confiabilidade R(t) = e^(-λt) para o tempo de operação informado e a tendência de falhas. Use quando o coordenador de manutenção perguntar sobre confiabilidade, reincidência ou risco de um ativo, conectando a triagem ao Tema 2 do briefing.",
+        "description": "Calcula, a partir do histórico simulado do FSM, as métricas de confiabilidade de um ativo, conectando a triagem ao Tema 2 do briefing. Use quando o coordenador de manutenção perguntar sobre confiabilidade, reincidência ou risco de um ativo. Método: (1) contam-se as falhas do período, EXCLUINDO as do tipo falso_positivo_ambiental, que não são falhas do ativo; (2) a exposição é o número de horas do período (operação contínua, 24 h por dia); (3) λ = falhas ÷ horas de exposição, MTBF = 1 ÷ λ e MTTR = média dos tempos de reparo; (4) R(t) = e^(−λt) para o horizonte t pedido; (5) a tendência usa uma versão simplificada do modelo de crescimento de confiabilidade (RGA, Crow-AMSAA): β < 1 indica melhora, β ≈ 1 estabilidade e β > 1 piora. A análise de distribuição de vida (LDA) fica fora do escopo desta persona.",
         "parameters": {
           "type": "object",
           "properties": {
@@ -323,28 +465,41 @@
               "minimum": 3,
               "maximum": 60,
               "default": 12,
-              "description": "Período do histórico usado para calcular λ."
+              "description": "Período de histórico OBSERVADO usado para calcular λ (exposição = meses × 730 h)."
             },
             "tempo_operacao_horas": {
               "type": "number",
               "minimum": 1,
-              "description": "Tempo t para calcular R(t). Por exemplo 720 para 30 dias de operação contínua."
+              "description": "Horizonte FUTURO t, em horas, para calcular R(t) = e^(−λt). Por exemplo 720 para os próximos 30 dias de operação."
             }
           },
-          "required": ["tag", "tempo_operacao_horas"],
+          "required": [
+            "tag",
+            "tempo_operacao_horas"
+          ],
           "additionalProperties": false
         }
       },
       "x-retorno": {
-        "numero_falhas": "integer",
+        "numero_falhas_consideradas": "integer (sem falsos positivos ambientais)",
+        "horas_exposicao": "number",
         "lambda_falhas_por_hora": "number",
         "mtbf_horas": "number",
         "mttr_horas": "number",
+        "horizonte_horas": "number",
         "confiabilidade_r_t": "number entre 0 e 1",
+        "beta_rga": "number",
         "tendencia": "melhorando | estavel | piorando"
       },
       "x-erros": [
-        { "codigo": "HISTORICO_INSUFICIENTE", "comportamento": "Menos de 2 falhas no período: informar que a métrica não é confiável em vez de mostrar o número." }
+        {
+          "codigo": "ATIVO_NAO_ENCONTRADO",
+          "comportamento": "Dizer que o TAG não existe e pedir confirmação."
+        },
+        {
+          "codigo": "HISTORICO_INSUFICIENTE",
+          "comportamento": "Menos de 3 falhas consideradas no período: informar que a métrica e a tendência não são confiáveis em vez de mostrar os números."
+        }
       ]
     }
   ]

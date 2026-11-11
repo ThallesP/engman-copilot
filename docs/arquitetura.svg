@@ -31,6 +31,7 @@
     <text x="886" y="38" text-anchor="middle">6 → 3: retorno da tool reinjetado no contexto</text>
     <text x="1006" y="282">Sim</text>
     <text x="368" y="220">bloqueado</text>
+    <text x="489" y="122" text-anchor="middle">segue</text>
     <text x="645" y="222">RAG: top-4</text>
     <text x="913" y="388">Não</text>
     <text x="795" y="372" text-anchor="end">reprovou:</text>
@@ -55,20 +56,20 @@
   <rect x="250" y="70" width="220" height="120" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="1.5"/>
   <text x="262" y="92" font-size="12.5" font-weight="700" fill="#111827">2 · Guardrail de entrada</text>
   <g font-size="11" fill="#374151">
-    <text x="262" y="112">ativo do escopo? (CFTV,</text>
-    <text x="262" y="127">CLS, LACO, PFF)</text>
-    <text x="262" y="142">pedido perigoso?</text>
-    <text x="262" y="157">injection? dado pessoal?</text>
-    <text x="262" y="172">ok → segue para o bloco 3</text>
+    <text x="262" y="112">bloqueia: fora do escopo,</text>
+    <text x="262" y="127">injection direta, dado pessoal</text>
+    <text x="262" y="142">sinaliza e segue: pedido</text>
+    <text x="262" y="157">perigoso, texto colado com</text>
+    <text x="262" y="172">ordens (vira DADO no bloco 3)</text>
   </g>
 
   <!-- 3 montagem -->
   <rect x="510" y="70" width="250" height="120" rx="8" fill="#fff" stroke="#111827" stroke-width="1.5"/>
   <text x="522" y="92" font-size="12.5" font-weight="700" fill="#111827">3 · Montagem do contexto</text>
   <g font-size="11" fill="#374151">
-    <text x="522" y="112">system prompt (7 blocos)</text>
-    <text x="522" y="127">+ histórico: 6 turnos + resumo</text>
-    <text x="522" y="142">+ TAG em análise</text>
+    <text x="522" y="112">system prompt + definições</text>
+    <text x="522" y="127">das tools + histórico + resumo</text>
+    <text x="522" y="142">+ TAG em análise · sinalizações</text>
     <text x="522" y="157">+ trechos da base (RAG)</text>
     <text x="522" y="172">+ retorno das tools como DADO</text>
   </g>
@@ -80,8 +81,8 @@
     <text x="802" y="112">Qwen 2.5 7B Instruct</text>
     <text x="802" y="127">Ollama, roda local</text>
     <text x="802" y="142">temperature 0.2</text>
-    <text x="802" y="157">max_tokens 700</text>
-    <text x="802" y="172">num_ctx 8192</text>
+    <text x="802" y="157">num_predict 1000</text>
+    <text x="802" y="172">num_ctx 16384</text>
   </g>
 
   <!-- 5 decisao -->
@@ -117,10 +118,10 @@
   <rect x="250" y="240" width="220" height="100" rx="8" fill="#fde7ef" stroke="#ed145b" stroke-width="1.5"/>
   <text x="262" y="262" font-size="12.5" font-weight="700" fill="#111827">Recusa</text>
   <g font-size="11" fill="#374151">
-    <text x="262" y="282">fora do escopo: frase</text>
-    <text x="262" y="297">padrão (regra 8)</text>
-    <text x="262" y="312">perigo: POP + NR-10/35</text>
-    <text x="262" y="327">e profissional (regra 6)</text>
+    <text x="262" y="282">fora do escopo ou dado</text>
+    <text x="262" y="297">pessoal: frase da regra 8</text>
+    <text x="262" y="312">injection direta:</text>
+    <text x="262" y="327">frase da regra 9</text>
   </g>
 
   <!-- kb -->
@@ -128,30 +129,30 @@
   <text x="522" y="262" font-size="12.5" font-weight="700" fill="#111827">Base de conhecimento</text>
   <g font-size="11" fill="#374151">
     <text x="522" y="282">ChromaDB + multilingual-e5</text>
-    <text x="522" y="297">catálogo · plano PMP-01 · FSM</text>
-    <text x="522" y="312">POPs · matriz MC-01 · NR</text>
-    <text x="522" y="327">glossário · boletins</text>
+    <text x="522" y="297">plano PMP-01 · POPs · MC-01</text>
+    <text x="522" y="312">fichas · NR · glossário · boletins</text>
+    <text x="522" y="327">(catálogo e FSM só via tools)</text>
   </g>
 
   <!-- 7 guardrail saida -->
   <rect x="780" y="420" width="250" height="120" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="1.5"/>
   <text x="792" y="442" font-size="12.5" font-weight="700" fill="#111827">7 · Guardrail de saída</text>
   <g font-size="11" fill="#374151">
-    <text x="792" y="462">TAG existe no catálogo?</text>
+    <text x="792" y="462">remove &lt;raciocinio&gt; · TAG existe?</text>
     <text x="792" y="477">fonte citada? FATO × HIPÓTESE?</text>
     <text x="792" y="492">AMBIENTAL com leitura da SCA?</text>
-    <text x="792" y="507">placa mascarada? no escopo?</text>
-    <text x="792" y="522">nível de confiança presente?</text>
+    <text x="792" y="507">placa removida? no escopo?</text>
+    <text x="792" y="522">confiança? 2ª falha → INDETERM.</text>
   </g>
 
   <!-- 8 resposta -->
   <rect x="470" y="420" width="260" height="120" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
   <text x="482" y="442" font-size="12.5" font-weight="700" fill="#111827">8 · Resposta + histórico</text>
   <g font-size="11" fill="#374151">
-    <text x="482" y="462">tabela TAG | Classificação |</text>
+    <text x="482" y="462">tabela TAG | Alarme | Classif. |</text>
     <text x="482" y="477">Evidência | Prioridade | Ação</text>
     <text x="482" y="492">+ nível de confiança</text>
-    <text x="482" y="507">OS sempre como proposta</text>
+    <text x="482" y="507">OS aberta só após confirmação</text>
     <text x="482" y="522">resumo a cada 6 turnos</text>
   </g>
 
@@ -159,7 +160,7 @@
   <rect x="470" y="580" width="260" height="80" rx="8" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.2"/>
   <text x="482" y="602" font-size="12.5" font-weight="700" fill="#111827">Histórico da conversa</text>
   <g font-size="11" fill="#374151">
-    <text x="482" y="622">últimos 6 turnos + resumo</text>
+    <text x="482" y="622">até 6 turnos (máx. 2.000 tokens)</text>
     <text x="482" y="637">lido pelo bloco 3 a cada turno</text>
   </g>
 

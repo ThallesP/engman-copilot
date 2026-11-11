@@ -9,7 +9,7 @@ Regra da disciplina: o caminho de execução precisa ser 100% gratuito. Todas as
 | Custo de uso | Zero, roda na máquina | Zero, roda na máquina | Zero, com limite de requisições por minuto e por dia | Zero, com limite de requisições e de tokens |
 | Licença / termos | Apache 2.0 | Llama 3.1 Community License | Termos do Google AI Studio; no plano gratuito o conteúdo pode ser usado para melhorar os produtos | Llama 3.3 Community License + termos da Groq |
 | Qualidade em pt-BR | Boa (treino multilíngue com português) | Boa | Muito boa | Muito boa |
-| Janela de contexto | 32K nativo (até 128K com extensão) | 128K | Da ordem de 1M tokens | 128K |
+| Janela de contexto | 32K por padrão, até 128K com YaRN | 128K | Da ordem de 1M tokens | 128K |
 | Privacidade | Dados não saem da máquina | Dados não saem da máquina | Dados vão para o Google | Dados vão para a Groq |
 | Tool calling | Suportado pelo Ollama | Suportado pelo Ollama | Suportado | Suportado (API compatível com OpenAI) |
 | Integração com Python | SDK `ollama` | SDK `ollama` | SDK `google-genai` | SDK `groq` |
@@ -31,20 +31,23 @@ Regra da disciplina: o caminho de execução precisa ser 100% gratuito. Todas as
 |---|---|---|
 | `temperature` | 0.2 | Triagem precisa ser repetível: o mesmo alarme deve receber a mesma classificação. Temperatura alta aumenta a variação e a chance de inventar. |
 | `top_p` | 0.9 | Corta tokens muito improváveis sem engessar o texto. |
-| `max_tokens` | 700 | Cabe a tabela de até 8 linhas (~500 tokens) e a linha de confiança. |
-| `num_ctx` | 8192 | O Ollama usa uma janela menor por padrão; 8.192 cabe o orçamento da [política de contexto](../README.md#12-política-de-contexto). |
+| `num_predict` (o `max_tokens` do Ollama) | 1000 | Cabe o bloco `<raciocinio>` (até 250 tokens), a tabela de até 8 linhas (~500 tokens) e a linha de confiança. |
+| `num_ctx` | 16384 | O Ollama usa uma janela menor por padrão. 16.384 cabe o orçamento da [política de contexto](../README.md#12-política-de-contexto) com folga para chamadas encadeadas de tools, e fica dentro dos 32K que o Qwen 2.5 suporta sem extensão. Custo: cerca de 1 GB a mais de RAM para o cache de contexto. |
 
 ## 3. Vector store
 
 | Critério | ChromaDB | FAISS |
 |---|---|---|
-| Filtro por metadados | Nativo (`where` por TAG, tipo de ativo, data) | Não tem; o filtro precisa ser feito fora do índice |
-| Persistência | Grava em disco sozinho | É preciso salvar e carregar o índice manualmente |
-| Escala | Milhares a milhões de vetores, suficiente para a base (~400 chunks) | Muito alta (bilhões), além do necessário |
+| Custo de uso | Zero, roda local | Zero, roda local |
 | Licença | Apache 2.0 | MIT |
-| Integração com Python | API simples, guarda texto e metadados junto do vetor | Guarda só vetores; texto e metadados ficam em outra estrutura |
+| Privacidade | Local, nada sai da máquina | Local, nada sai da máquina |
+| Filtro por metadados | Nativo (`where` por tipo de documento, tipo de ativo, data) | Não tem; o filtro precisa ser feito fora do índice |
+| Persistência | Grava em disco sozinho | É preciso salvar e carregar o índice manualmente |
+| Escala | Milhares a milhões de vetores, suficiente para a base (~150 chunks) | Muito alta (bilhões), além do necessário |
+| Integração com Python | `pip install chromadb`; guarda texto e metadados junto do vetor | `pip install faiss-cpu`; guarda só vetores, texto e metadados ficam em outra estrutura |
+| Maturidade / documentação | Boa, projeto mais novo (2022) e muito usado em RAG | Alta, mantido pela Meta desde 2017 |
 
-**Escolha: ChromaDB.** A busca filtrada por TAG é essencial para não misturar o histórico de um ativo com o de outro. O FAISS é mais rápido em grande escala, mas a base tem poucas centenas de trechos e a velocidade não faz diferença aqui.
+**Escolha: ChromaDB.** A busca filtrada por tipo de documento e tipo de ativo evita trazer, por exemplo, o POP do pórtico para uma pergunta sobre câmera. O FAISS é mais rápido em grande escala, mas a base tem poucas centenas de trechos e a velocidade não faz diferença aqui.
 
 ## 4. Embeddings
 
